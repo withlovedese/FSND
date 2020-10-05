@@ -36,6 +36,18 @@
           <label for="facebook_link">Facebook Link</label>
           {{ form.facebook_link(class_ = 'form-control', placeholder='http://', id=form.facebook, autofocus = true) }}
         </div>
+      <div class="form-group">
+          <label for="website_link">Website Link</label>
+          {{ form.website_link(class_ = 'form-control', placeholder='http://', id=form.website, autofocus = true) }}
+        </div>
+      <div class="form-group">
+          <label for="image_link">Image Link</label>
+          {{ form.image_link(class_ = 'form-control', placeholder='http://', id=form.image, autofocus = true) }}
+        </div>
+      <div class="form-group">
+          <label for="seeking_talent">Seeking talent?</label>
+          {{ form.seeking_talent(class_ = 'form-control', id=form.seeking, autofocus = true) }}
+        </div>
       <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>

@@ -238,8 +238,12 @@ def create_venue_submission():
     phone = request.form['phone']
     genres = request.form.getlist('genres')
     facebook_link = request.form['facebook_link']
+    website_link = request.form['website_link']
+    image_link = request.form['image_link'],
+    seeking_talent = True if request.form['seeking_talent'] else False
     venue = Venue(name=name, city=city, state=state, address=address, phone=phone, genres=genres,
-                  facebook_link=facebook_link)
+                  facebook_link=facebook_link, website=website_link, image_link=image_link,
+                  seeking_talent=seeking_talent)
     db.session.add(venue)
     db.session.commit()
   except:
@@ -474,7 +478,11 @@ def create_artist_submission():
     phone = request.form['phone']
     genres = request.form.getlist('genres'),
     facebook_link = request.form['facebook_link']
-    artist = Artist(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link)
+    website_link = request.form['website_link']
+    image_link = request.form['image_link'],
+    seeking_venue = True if request.form['seeking_venue'] else False
+    artist = Artist(name=name, city=city, state=state, phone=phone, genres=genres, facebook_link=facebook_link,
+                    website=website_link, image_link=image_link, seeking_venue=seeking_venue)
     db.session.add(artist)
     db.session.commit()
   except:
