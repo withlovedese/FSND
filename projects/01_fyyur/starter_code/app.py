@@ -10,7 +10,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from forms import *
 from flask_migrate import Migrate
 from sqlalchemy import String, func
@@ -271,15 +271,23 @@ def delete_venue(venue_id):
 
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
+  error = False
   try:
     Venue.query.filter_by(id=venue_id).delete()
     db.session.commit()
   except:
+    error = True
     db.session.rollback()
   finally:
     db.session.close()
+    if error:
+      flash('An error occurred. Venue could not be edited.')
+    else:
+      flash('Venue was successfully deleted!')
 
-  return render_template('pages/home.html')
+  return redirect('/venues')
+
+  #return render_template('/home.html')
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -379,6 +387,8 @@ def edit_artist(artist_id):
     form.phone.data = artist.phone
     form.genres.data = artist.genres
     form.facebook_link.data = artist.facebook_link
+    form.website_link.data = artist.website
+    form.image_link.data = artist.image_link
 
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
@@ -388,15 +398,18 @@ def edit_artist_submission(artist_id):
   # artist record with ID <artist_id> using the new attributes
 
   error = False
-  artist = Artist.query.get(artist_id)
 
   try:
+    artist = Artist.query.get(artist_id)
     artist.name = request.form['name']
     artist.city = request.form['city']
     artist.state = request.form['state']
     artist.phone = request.form['phone']
     artist.genres = request.form.getlist('genres')
     artist.facebook_link = request.form['facebook_link']
+    artist.website = request.form['website_link']
+    artist.image_link = request.form['image_link']
+    artist.seeking_venue = True if 'seeking_venue' in request.form else False
     db.session.commit()
   except:
     error = True
@@ -405,9 +418,9 @@ def edit_artist_submission(artist_id):
   finally:
     db.session.close()
   if error:
-    flash('An error occurred. The Artist table could not be changed.')
+    flash('An error occurred. The Artist could not be changed.')
   else:
-    flash('The Artist table was updated successfully!')
+    flash('The Artist was updated successfully!')
 
   return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -425,6 +438,8 @@ def edit_venue(venue_id):
     form.address.data = venue.address
     form.genres.data = venue.genres
     form.facebook_link.data = venue.facebook_link
+    form.website_link.data = venue.website
+    form.image_link.data = venue.image_link
 
 
   return render_template('forms/edit_venue.html', form=form, venue=venue)
@@ -435,9 +450,9 @@ def edit_venue_submission(venue_id):
   # venue record with ID <venue_id> using the new attributes
 
   error = False
-  venue = Venue.query.get(venue_id)
 
   try:
+    venue = Venue.query.get(venue_id)
     venue.name = request.form['name']
     venue.city = request.form['city']
     venue.state = request.form['state']
@@ -445,6 +460,9 @@ def edit_venue_submission(venue_id):
     venue.phone = request.form['phone']
     venue.genres = request.form.getlist('genres')
     venue.facebook_link = request.form['facebook_link']
+    venue.website = request.form['website_link']
+    venue.image_link = request.form['image_link']
+    venue.seeking_talent = True if 'seeking_talent' in request.form else False
 
     db.session.commit()
   except:
@@ -454,9 +472,9 @@ def edit_venue_submission(venue_id):
   finally:
     db.session.close()
   if error:
-    flash(f'An error occurred. The Venue table could not be changed.')
+    flash(f'An error occurred. The Venue could not be changed.')
   if not error:
-    flash(f'The Venue table  was successfully updated!')
+    flash(f'The Venue was successfully updated!')
 
   return redirect(url_for('show_venue', venue_id=venue_id))
 

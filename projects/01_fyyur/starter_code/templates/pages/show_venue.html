@@ -1,10 +1,14 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Venue Search{% endblock %}
 {% block content %}
+<style>
+</style>
 <div class="row">
 	<div class="col-sm-6">
 		<h1 class="monospace">
 			{{ venue.name }}
+			<button id='update' data-id='{{ venue.id }}'>&#x270e;</button>
+			<button id='delete' data-id='{{ venue.id }}'>&cross;</button>
 		</h1>
 		<p class="subtitle">
 			ID: {{ venue.id }}
@@ -74,6 +78,28 @@
 		{% endfor %}
 	</div>
 </section>
+<script type='text/javascript'>
+	const edit = document.getElementById('update');
+	edit.onclick = function(e) {
+		const VenueId = e.target.dataset['id'];
+		fetch('/venues/' + VenueId + '/edit', {
+			method: 'GET'
+		})
+		.then(function() {
+			window.location.replace('/venues/' + VenueId + '/edit')
+		})
+	}
+	const venue = document.getElementById('delete');
+	venue.onclick = function(e) {
+		const VenueId = e.target.dataset['id'];
+		fetch('/venues/' + VenueId, {
+			method: 'DELETE'
+		})
+		.then(response => {
+			window.location.href = response.url;
+		})
+	}
+</script>
 
 {% endblock %}
 

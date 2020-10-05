@@ -5,6 +5,8 @@
 	<div class="col-sm-6">
 		<h1 class="monospace">
 			{{ artist.name }}
+			<button id='update' data-id='{{ artist.id }}'>&#x270e;</button>
+			<button id='delete' data-id='{{ artist.id }}'>&cross;</button>
 		</h1>
 		<p class="subtitle">
 			ID: {{ artist.id }}
@@ -40,7 +42,7 @@
 		{% endif %}
 	</div>
 	<div class="col-sm-6">
-		<img src="{{ artist.image_link }}" alt="Venue Image" />
+		<img src="{{ artist.image_link }}" alt="Artist Image" />
 	</div>
 </div>
 <section>
@@ -71,6 +73,28 @@
 		{% endfor %}
 	</div>
 </section>
+<script>
+	const artist = document.getElementById('delete');
+	artist.onclick = function(e) {
+		const artistId = e.target.dataset['id'];
+		fetch('/artists/' + artistId, {
+			method: 'DELETE'
+		})
+		.then(function() {
+			window.location.replace('/')
+		})
+	}
+	const edit = document.getElementById('update');
+	edit.onclick = function(e) {
+		const artistId = e.target.dataset['id'];
+		fetch('/artists/' + artistId + '/edit', {
+			method: 'GET'
+		})
+		.then(function() {
+				window.location.replace('/artists/' + artistId + '/edit')
+		})
+	}
+</script>
 
 {% endblock %}
 
